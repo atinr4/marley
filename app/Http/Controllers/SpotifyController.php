@@ -152,9 +152,9 @@ class SpotifyController extends Controller
                         $track_id = $responsePlayList->items[$j]->track->id;
                         $check_track_exists = Quiz::check_track_exists($track_id);
                         
-                        $correct_answer = str_replace("'","\'", $responsePlayList->items[$j]->track->name); 	
+                        $correct_answer = str_replace("ʼ","\'", str_replace("'","\'", $responsePlayList->items[$j]->track->name)); 	
 						$option = implode(",",$option_list);
-                        $option = str_replace("'","\'", $option); 
+                        $option = str_replace("ʼ","\'", str_replace("'","\'", $option)); 
                         
                         if ($check_track_exists == 0)
                             Quiz::insert_question($track_id,"What is the name of this song?",$correct_answer,$option);

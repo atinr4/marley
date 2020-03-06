@@ -15,6 +15,9 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+/**
+ * Spotify APIs
+ */
 $router->get('/spotify-user-details', [
     'as' => 'spotify-user-details', 'uses' => 'SpotifyController@getUserDetails'
 ]);
@@ -31,6 +34,25 @@ $router->get('/spotify-category-playlist/{category}', [
     'as' => 'spotify-category-playlist', 'uses' => 'SpotifyController@categoryPlaylist'
 ]);
 
+/**
+ * Apple Music APIs
+ */
+
+$router->get('/applemusic-user-details', [
+    'as' => 'applemusic-user-details', 'uses' => 'AppleMusicController@getUserDetails'
+]);
+
+$router->get('/applemusic-categories', [
+    'as' => 'applemusic-categories', 'uses' => 'AppleMusicController@listCategories'
+]);
+
+$router->get('/applemusic-category-playlist/{category_id}', [
+    'as' => 'applemusic-category-playlist', 'uses' => 'AppleMusicController@categoryPlaylist'
+]);
+
+/**
+ * Common APIs
+ */
 $router->post('/submit-answer', [
     'as' => 'submit-answer', 'uses' => 'AnswerController@submitAnswer'
 ]);

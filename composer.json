@@ -8,7 +8,9 @@
         "php": "^7.2",
         "ixudra/curl": "^6.19",
         "jwilsson/spotify-web-api-php": "^3.1",
-        "laravel/lumen-framework": "^6.0"
+        "laravel/lumen-framework": "^6.0",
+        "league/flysystem": "^1.0",
+        "pouler/apple-music-api": "^0.3.1"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
