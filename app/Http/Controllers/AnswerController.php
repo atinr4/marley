@@ -9,6 +9,7 @@ use App\Spotify;
 use App\QuizOptions;
 use App\UserAnswer;
 use App\UserGameSystem;
+use App\GameStreak;
 
 class AnswerController extends Controller
 {
