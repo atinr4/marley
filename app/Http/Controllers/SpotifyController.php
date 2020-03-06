@@ -104,7 +104,7 @@ class SpotifyController extends Controller
         $access_token = $request->input('access_token');
         $curlService = new \Ixudra\Curl\CurlService();
 
-        $getUserDetails = $this->getUserDetails($access_token);
+        $getUserDetails = $this->getUserDetails();
         if(isset($getUserDetails->error) && $getUserDetails->error->status == 401)
         {
             return response()->json($getUserDetails);
