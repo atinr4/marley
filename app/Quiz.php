@@ -27,7 +27,7 @@ class Quiz extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public static function get_track_details($track_id)
     {
-		$result = Quiz::where('music_api_id',$track_id)->count();
+		$result = Quiz::where('music_api_id',$track_id)->first()->toArray();
         return $result;
     }
 

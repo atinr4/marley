@@ -15,6 +15,9 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+$router->get('/spotify-user-details', [
+    'as' => 'spotify-user-details', 'uses' => 'SpotifyController@getUserDetails'
+]);
 
 $router->get('/spotify-genres', [
     'as' => 'spotify-genres', 'uses' => 'SpotifyController@listGenres'

@@ -8,6 +8,8 @@ use App\Quiz;
 use App\Spotify;
 use App\QuizOptions;
 use App\UserAnswer;
+use App\UserGameSystem;
+use App\GameStreak;
 
 class SpotifyController extends Controller
 {
@@ -21,19 +23,27 @@ class SpotifyController extends Controller
         //
     }
 
-    public function getUserDetails($access_token)
+    public function getUserDetails(Request $request)
     {
+        $access_token = $request->input('access_token');
         $curlService = new \Ixudra\Curl\CurlService();
         $response = $curlService->to(env('SPOTIFY_API_BASE').'/me')
         ->withHeader('Accept: application/json')
         ->withHeader('Content-Type: application/json')
         ->withHeader('Authorization: Bearer '.$access_token)
         ->get();
-        
-        if(isset($response->error) && $response->error->status == 401)
-            return response()->json($response);
-        
-        return  json_decode($response);
+
+        $responseCheck = json_decode($response);      
+
+        if(isset($responseCheck->error) && $responseCheck->error->status == 401)
+        {
+            return response()->json($responseCheck);
+        }
+
+        UserGameSystem::checkUserGameProfile($responseCheck);
+        $getUserProfile =  UserGameSystem::getUserProfile($responseCheck->id);
+        $getUserProfile->streak =  GameStreak::getStreak($getUserProfile->correct_guess_streak_counter);
+        return $getUserProfile;
     }
 
     public function listGenres(Request $request)
@@ -41,8 +51,8 @@ class SpotifyController extends Controller
         $access_token = $request->input('access_token');
         $curlService = new \Ixudra\Curl\CurlService();
 
-        $getUserDetails = $this->getUserDetails($access_token);
-
+        $getUserDetails = $this->getUserDetails();
+        
         $country = $getUserDetails->country;
 
         $response = $curlService->to(env('SPOTIFY_API_BASE').'/recommendations/available-genre-seeds')
@@ -64,8 +74,11 @@ class SpotifyController extends Controller
         $access_token = $request->input('access_token');
         $curlService = new \Ixudra\Curl\CurlService();
 
-        $getUserDetails = $this->getUserDetails($access_token);
-
+        $getUserDetails = $this->getUserDetails();
+        if(isset($getUserDetails->error) && $getUserDetails->error->status == 401)
+        {
+            return response()->json($getUserDetails);
+        }
         $country = $getUserDetails->country;
 
         $response = $curlService->to(env('SPOTIFY_API_BASE').'/browse/categories')
@@ -92,6 +105,10 @@ class SpotifyController extends Controller
         $curlService = new \Ixudra\Curl\CurlService();
 
         $getUserDetails = $this->getUserDetails($access_token);
+        if(isset($getUserDetails->error) && $getUserDetails->error->status == 401)
+        {
+            return response()->json($getUserDetails);
+        }
         
         $country = $getUserDetails->country;
 
