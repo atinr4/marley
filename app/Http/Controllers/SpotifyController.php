@@ -46,6 +46,25 @@ class SpotifyController extends Controller
         return $getUserProfile;
     }
 
+    public function getUserDetailsCheck($access_token)
+    {
+        $curlService = new \Ixudra\Curl\CurlService();
+        $response = $curlService->to(env('SPOTIFY_API_BASE').'/me')
+        ->withHeader('Accept: application/json')
+        ->withHeader('Content-Type: application/json')
+        ->withHeader('Authorization: Bearer '.$access_token)
+        ->get();
+
+        $responseCheck = json_decode($response);      
+        
+        if(isset($responseCheck->error) && $responseCheck->error->status == 401)
+        {
+            return $responseCheck;
+        }
+
+        return $responseCheck;
+    }
+
     public function listGenres(Request $request)
     {
         $access_token = $request->input('access_token');
@@ -74,7 +93,7 @@ class SpotifyController extends Controller
         $access_token = $request->input('access_token');
         $curlService = new \Ixudra\Curl\CurlService();
 
-        $getUserDetails = $this->getUserDetails();
+        $getUserDetails = $this->getUserDetailsCheck($access_token);
         if(isset($getUserDetails->error) && $getUserDetails->error->status == 401)
         {
             return response()->json($getUserDetails);
@@ -104,7 +123,8 @@ class SpotifyController extends Controller
         $access_token = $request->input('access_token');
         $curlService = new \Ixudra\Curl\CurlService();
 
-        $getUserDetails = $this->getUserDetails();
+        $getUserDetails = $this->getUserDetailsCheck($access_token);
+
         if(isset($getUserDetails->error) && $getUserDetails->error->status == 401)
         {
             return response()->json($getUserDetails);
