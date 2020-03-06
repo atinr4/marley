@@ -116,7 +116,7 @@ class AppleMusicController extends Controller
                         $trackData = array(
 										"id" => $responsePlayList->data[0]->relationships->tracks->data[$j]->id,
 						  				"tracks_url" => $responsePlayList->data[0]->relationships->tracks->data[$j]->attributes->previews[0]->url,
-										"spotify_url" => $responsePlayList->data[0]->relationships->tracks->data[$j]->attributes->url,
+										"apple_music_url" => $responsePlayList->data[0]->relationships->tracks->data[$j]->attributes->url,
 										"correct_answer" => $responsePlayList->data[0]->relationships->tracks->data[$j]->attributes->name,
 										"options_title" => 'What is the name of this song?',
 										"options" => $option_list
