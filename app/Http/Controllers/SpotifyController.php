@@ -140,7 +140,7 @@ class SpotifyController extends Controller
         ->get();
         
         $result = json_decode($response);
-        $rand_keys_playlist = array_rand($result->playlists->items, $result->playlists->limit);
+        //$rand_keys_playlist = array_rand($result->playlists->items, $result->playlists->limit);
         if(count($result->playlists->items) > 0) {
             if(count($result->playlists->items) >= 5)
 			    $rand_keys = array_rand($result->playlists->items, 5);
