@@ -24,6 +24,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('userlives:restore')->daily();
+        $schedule->command('userlives:restore')->everyMinute();
     }
 }
