@@ -5,15 +5,22 @@ use Ixudra\Curl\Facades\Curl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use PouleR\AppleMusicAPI\AppleMusicAPITokenGenerator;
-
+use Illuminate\Support\Facades\Auth;
+use App\User;
 use App\Quiz;
 use App\Spotify;
 use App\QuizOptions;
 use App\UserAnswer;
 use App\UserGameSystem;
+use App\GameStreak;
+
 
 class AppleMusicController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
     public function generatDeveloperToken()
     {
@@ -30,7 +37,10 @@ class AppleMusicController extends Controller
 
     public function getUserDetails(Request $request)
     {
-            dd(str_replace("ʼ","\'", 'hereʼs'));
+        $user = Auth::user();
+        $getUserProfile = UserGameSystem::where('email', $user->email)->where('login_using','Apple')->first();
+        $getUserProfile->streak =  GameStreak::getStreak($getUserProfile->correct_guess_streak_counter);
+        return $getUserProfile;
 
     } 
 
@@ -80,7 +90,7 @@ class AppleMusicController extends Controller
                 $rand_keys = array_rand($result->data[0]->relationships->playlists->data, count($result->data[0]->relationships->playlists->data));
 
             $tracklist = array();
-            for ($i=0;$i<sizeof($rand_keys);$i++) {
+            for ($i=0;$i<4;$i++) {
                 $responsePlayListCurl = $curlService->to(env('APPLE_MUSIC_API').'/catalog/us/playlists')
                     ->withData( array( 'ids' => $result->data[0]->relationships->playlists->data[$rand_keys[$i]]->id)  )
                     ->withHeader('Accept: */*')
@@ -91,7 +101,7 @@ class AppleMusicController extends Controller
                 
                 $rand_keys_playlist = array_rand($responsePlayList->data[0]->relationships->tracks->data, count($responsePlayList->data[0]->relationships->tracks->data));
 
-                for ($j=0; $j < sizeof($rand_keys_playlist); $j++) {
+                for ($j=0; $j < 3; $j++) {
                     if ($responsePlayList->data[0]->relationships->tracks->data[$j]->attributes->previews[0]->url!=""){
                         $getSongOption = QuizOptions::getSongOption();
                         $option_list = array(

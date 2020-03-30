@@ -11,7 +11,7 @@ use App\UserAnswer;
 use App\UserGameSystem;
 use App\GameStreak;
 
-class AnswerController extends Controller
+class GameController extends Controller
 {
 
     public function submitAnswer(Request $request)
@@ -46,6 +46,28 @@ class AnswerController extends Controller
         }
 
         return $response;
-    }   
+    } 
+    
+    
+    public function leaderBoard()
+    {
+        $getLeaderBoard = UserGameSystem::where('total_xp','!=',0)->orderBy('total_xp', 'DESC')->limit(5)->get();
+        $response["ResponseCode"] = 200;
+        $response["leader_board"] = $getLeaderBoard;
+
+        return $response;
+    }
+
+
+    public function addLifeAfterAd(Request $request)
+    {
+        $user_id = $request->input('user_id');
+        $userProfile = UserGameSystem::where('user_id', $user_id)->first();
+        if($userProfile->lives >= 0 && $userProfile->lives < 3) {
+            $userProfile->lives += 1;
+        }
+        $userProfile->save();
+        return  $userProfile;
+    }
     
 }

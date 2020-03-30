@@ -21,6 +21,8 @@ class UserGameSystem extends Model implements AuthenticatableContract, Authoriza
 
     public static $spotifyLoginType = 'Spotify';
 
+    public static $appleLoginType = 'Apple';
+
 
     public static function checkUserGameProfile($userObject)
     {

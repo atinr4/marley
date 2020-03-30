@@ -38,9 +38,7 @@ $router->get('/spotify-category-playlist/{category}', [
  * Apple Music APIs
  */
 
-$router->get('/applemusic-user-details', [
-    'as' => 'applemusic-user-details', 'uses' => 'AppleMusicController@getUserDetails'
-]);
+
 
 $router->get('/applemusic-categories', [
     'as' => 'applemusic-categories', 'uses' => 'AppleMusicController@listCategories'
@@ -50,9 +48,32 @@ $router->get('/applemusic-category-playlist/{category_id}', [
     'as' => 'applemusic-category-playlist', 'uses' => 'AppleMusicController@categoryPlaylist'
 ]);
 
+$router->get('/applemusic-user-details', [
+    'as' => 'applemusic-user-details', 'uses' => 'AppleMusicController@getUserDetails'
+]);
+
+// API route group
+$router->group(['prefix' => 'api'], function () use ($router) {
+    // Matches "/api/register
+    $router->post('register', 'AuthController@register');
+
+    $router->post('login', 'AuthController@login');  
+ 
+ });
+
 /**
  * Common APIs
  */
 $router->post('/submit-answer', [
-    'as' => 'submit-answer', 'uses' => 'AnswerController@submitAnswer'
+    'as' => 'submit-answer', 'uses' => 'GameController@submitAnswer'
 ]);
+
+$router->get('/leader-board', [
+    'as' => 'leader-board', 'uses' => 'GameController@leaderBoard'
+]);
+
+$router->put('/update-user-life', [
+    'as' => 'update-user-life', 'uses' => 'GameController@addLifeAfterAd'
+]);
+
+

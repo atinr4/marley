@@ -151,7 +151,7 @@ class SpotifyController extends Controller
 			    $rand_keys = array_rand($result->playlists->items, count($result->playlists->items));
 
             $tracklist = array();
-            for ($i=0;$i<sizeof($rand_keys);$i++) {
+            for ($i=0;$i<4;$i++) {
                 
                 $responsePlayListCurl = $curlService->to(env('SPOTIFY_API_BASE').'/playlists/'.$result->playlists->items[$rand_keys[$i]]->id.'/tracks')
                 ->withData( array( 'country' => $country,'limit' => 12,'offset'=> rand(0,20) ) )
@@ -161,7 +161,7 @@ class SpotifyController extends Controller
                 ->get();
                 $responsePlayList = json_decode($responsePlayListCurl);
                 $rand_keys_playlist = array_rand($responsePlayList->items, count($responsePlayList->items));
-                for ($j=0; $j < sizeof($rand_keys_playlist); $j++) {
+                for ($j=0; $j < 3; $j++) {
                     if ($responsePlayList->items[$j]->track->preview_url!=""){
                         $getSongOption = QuizOptions::getSongOption();
                         $option_list = array(
