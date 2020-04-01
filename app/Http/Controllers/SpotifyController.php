@@ -203,5 +203,74 @@ class SpotifyController extends Controller
 
         return $responseData;
     }
+
+
+
+    public function generateOptions(Request $request)
+    {
+        $access_token = $request->input('access_token');
+        $curlService = new \Ixudra\Curl\CurlService();
+
+        $getUserDetails = $this->getUserDetailsCheck($access_token);
+
+        if(isset($getUserDetails->error) && $getUserDetails->error->status == 401)
+        {
+            return response()->json($getUserDetails);
+        }
+        
+        $country = $getUserDetails->country;
+
+        $response = $curlService->to(env('SPOTIFY_API_BASE').'/browse/featured-playlists')
+        ->withData( array( 'country' => $country,'limit' => 12,'offset'=> rand(0,20) ) )
+        ->withHeader('Accept: application/json')
+        ->withHeader('Content-Type: application/json')
+        ->withHeader('Authorization: Bearer '.$access_token)
+        ->get();
+        
+        $result = json_decode($response);
+
+        $responseData["status"] = 400;
+        $responseData["tracklist"] = [];
+        //$rand_keys_playlist = array_rand($result->playlists->items, $result->playlists->limit);
+        if(count($result->playlists->items) > 0) {
+            if(count($result->playlists->items) >= 5)
+			    $rand_keys = array_rand($result->playlists->items, 5);
+			else
+			    $rand_keys = array_rand($result->playlists->items, count($result->playlists->items));
+
+            $tracklist = array();
+            for ($i=0;$i<count($result->playlists->items);$i++) {
+                if(isset($result->playlists->items[$rand_keys[$i]])) {
+                    $responsePlayListCurl = $curlService->to(env('SPOTIFY_API_BASE').'/playlists/'.$result->playlists->items[$rand_keys[$i]]->id.'/tracks')
+                    ->withData( array( 'country' => $country,'limit' => 12,'offset'=> rand(0,20) ) )
+                    ->withHeader('Accept: application/json')
+                    ->withHeader('Content-Type: application/json')
+                    ->withHeader('Authorization: Bearer '.$access_token)
+                    ->get();
+                    $responsePlayList = json_decode($responsePlayListCurl);
+                    $rand_keys_playlist = array_rand($responsePlayList->items, count($responsePlayList->items));
+                    for ($j=0; $j < count($responsePlayList->items); $j++) {
+                        if ($responsePlayList->items[$j]->track->preview_url!=""){
+                            $checkSong = QuizOptions::where('optionTitle','LIKE',$responsePlayList->items[$j]->track->name)->count();
+                            if($checkSong == 0) {
+                                $quizNewOption = new QuizOptions();
+                                $quizNewOption->optiontype = "song_name";
+                                $quizNewOption->optionTitle = $responsePlayList->items[$j]->track->name;
+                                $quizNewOption->save();
+                            }
+
+                        }
+                    }
+                }
+            }
+
+            $responseData["status"] = 200;
+			$responseData["message"] = "Successfully Generated";
+            
+        }
+
+
+        return $responseData;
+    }
     
 }

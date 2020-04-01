@@ -34,6 +34,10 @@ $router->get('/spotify-category-playlist/{category}', [
     'as' => 'spotify-category-playlist', 'uses' => 'SpotifyController@categoryPlaylist'
 ]);
 
+$router->get('/generate-options', [
+    'as' => 'generate-options', 'uses' => 'SpotifyController@generateOptions'
+]);
+
 /**
  * Apple Music APIs
  */
