@@ -41,7 +41,9 @@ $router->get('/generate-options', [
 /**
  * Apple Music APIs
  */
-
+$router->get('/applemusic-token', [
+    'as' => 'applemusic-token', 'uses' => 'AppleMusicController@getToken'
+]);
 
 
 $router->get('/applemusic-categories', [

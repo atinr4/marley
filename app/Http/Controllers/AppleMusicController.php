@@ -19,7 +19,7 @@ class AppleMusicController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['generatDeveloperToken','getToken']]);
     }
 
     public function generatDeveloperToken()
@@ -33,6 +33,13 @@ class AppleMusicController extends Controller
         );
 
         return $jwtToken;
+    }
+
+    public function getToken()
+    {
+        $responseData["status"] = 200;
+		$responseData["token"] = $this->generatDeveloperToken();
+        return $responseData;
     }
 
     public function getUserDetails(Request $request)
