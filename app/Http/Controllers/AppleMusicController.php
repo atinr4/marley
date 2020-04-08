@@ -19,7 +19,7 @@ class AppleMusicController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth', ['except' => ['generatDeveloperToken','getToken']]);
+        $this->middleware('auth');
     }
 
     public function generatDeveloperToken()
