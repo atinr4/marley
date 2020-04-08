@@ -89,7 +89,6 @@ class AppleMusicController extends Controller
         ->get();
 
         $result = json_decode($response);
-        $rand_keys_playlist = array_rand($result->data[0]->relationships->playlists->data, 10);
         if(count($result->data[0]->relationships->playlists->data) > 0) {
             if(count($result->data[0]->relationships->playlists->data) >= 5)
 			    $rand_keys = array_rand($result->data[0]->relationships->playlists->data, 5);
@@ -105,8 +104,6 @@ class AppleMusicController extends Controller
                     ->withHeader('Authorization: Bearer '.$developerToken)
                     ->get();
                 $responsePlayList = json_decode($responsePlayListCurl);
-                
-                $rand_keys_playlist = array_rand($responsePlayList->data[0]->relationships->tracks->data, count($responsePlayList->data[0]->relationships->tracks->data));
 
                 for ($j=0; $j < 3; $j++) {
                     if ($responsePlayList->data[0]->relationships->tracks->data[$j]->attributes->previews[0]->url!=""){
