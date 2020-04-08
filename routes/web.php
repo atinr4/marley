@@ -45,7 +45,6 @@ $router->get('/applemusic-token', [
     'as' => 'applemusic-token', 'uses' => 'AppleMusicController@getToken'
 ]);
 
-
 $router->get('/applemusic-categories', [
     'as' => 'applemusic-categories', 'uses' => 'AppleMusicController@listCategories'
 ]);
@@ -57,6 +56,18 @@ $router->get('/applemusic-category-playlist/{category_id}', [
 $router->get('/applemusic-user-details', [
     'as' => 'applemusic-user-details', 'uses' => 'AppleMusicController@getUserDetails'
 ]);
+
+/**
+ * Un-Authorized User Access
+ */
+$router->get('/unauth-applemusic-categories', [
+    'as' => 'unauth-applemusic-categories', 'uses' => 'UnauthSystemController@listCategories'
+]);
+
+$router->get('/unauth-applemusic-category-playlist/{category_id}', [
+    'as' => 'unauth-applemusic-category-playlist', 'uses' => 'UnauthSystemController@categoryPlaylist'
+]);
+
 
 // API route group
 $router->group(['prefix' => 'api'], function () use ($router) {
