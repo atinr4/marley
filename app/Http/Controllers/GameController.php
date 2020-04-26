@@ -23,15 +23,17 @@ class GameController extends Controller
 
             foreach ($user_answer as $answer){
                 $get_track_details = Quiz::get_track_details($answer['question_id']);
+
+                $answer_given = str_replace("ʼ","\'", str_replace("'","\'", $answer['answer'])); 	
                 
                 if (count($get_track_details) > 0) {
-                    if ($answer['answer'] == $get_track_details['correct_answer']) {
+                    if ($answer_given == $get_track_details['correct_answer']) {
                         $result = "correct";
                     } else {
                         $result = "incorrect";
                     }
                         
-                    $answer_given = str_replace("'","\'", $answer['answer']); 	
+                   
                     UserAnswer::insert_user_answer_log($user_id, $get_track_details['id'], $answer_given, $result);
                 }
             }
